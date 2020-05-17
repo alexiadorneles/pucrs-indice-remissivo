@@ -1,6 +1,8 @@
 package domain;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class DoubleLinkedList<T> {
     private Node header;
@@ -38,10 +40,37 @@ public class DoubleLinkedList<T> {
 
     public void forEach(Consumer<T> consumer) {
         this.reset();
-        for (int i = 0; i < count; i++) {
-            consumer.accept(current.element);
+        while (!this.current.equals(this.trailer)) {
+            consumer.accept(this.current.element);
             this.next();
         }
+    }
+
+    public <R> DoubleLinkedList<R> map(Function<? super T, R> function) {
+        this.reset();
+        DoubleLinkedList<R> newList = new DoubleLinkedList<>();
+        while (!this.current.equals(this.trailer)) {
+            R result = function.apply(this.current.element);
+            newList.add(result);
+            this.next();
+        }
+
+        return newList;
+    }
+
+    public <R> R reduce(BiFunction<R, ? super T, R> function, R accumulator) {
+        this.reset();
+        R newAccumulator = accumulator;
+        while (!this.current.equals(this.trailer)) {
+            newAccumulator = function.apply(newAccumulator, this.current.element);
+            this.next();
+        }
+
+        return newAccumulator;
+    }
+
+    public void addAll(DoubleLinkedList<T> list) {
+        list.forEach(this::add);
     }
 
     public DoubleLinkedList() {
@@ -81,6 +110,7 @@ public class DoubleLinkedList<T> {
 
     public boolean remove(T element) {
         Node aux = header.next;
+
         while (aux != trailer) {
             if (aux.element.equals(element)) {
                 aux.prev.next = aux.next;
@@ -154,7 +184,6 @@ public class DoubleLinkedList<T> {
         if ((index < 0) || (index >= count)) {
             throw new IndexOutOfBoundsException();
         }
-
 
         Node aux = this.getNodeRef(index);
         T auxElement = aux.element;

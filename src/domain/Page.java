@@ -3,6 +3,7 @@ package domain;
 public class Page {
     private DoubleLinkedList<Line> lines;
     private int number;
+    private int numberOfStopwords;
 
     public Page(int number) {
         this.number = number;
@@ -11,6 +12,18 @@ public class Page {
 
     public void addLine(Line line) {
         this.lines.add(line);
+    }
+
+    public DoubleLinkedList<Line> getLines() {
+        return lines;
+    }
+
+    public void incrementNumberOfStopwords() {
+        this.numberOfStopwords++;
+    }
+
+    public int getNumberOfStopwords() {
+        return numberOfStopwords;
     }
 
     @Override

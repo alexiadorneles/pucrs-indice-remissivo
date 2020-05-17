@@ -13,6 +13,21 @@ public class Book {
         this.totalPages++;
     }
 
+    public DoubleLinkedList<Page> getPages() {
+        return pages;
+    }
+
+    public int getTotalStopwords() {
+        return this.pages.map(Page::getNumberOfStopwords).reduce(Integer::sum, 0);
+    }
+
+    public int getTotalWordsCount() {
+        DoubleLinkedList<Line> allLines = new DoubleLinkedList<>();
+        DoubleLinkedList<DoubleLinkedList<Line>> linesMatrix = this.pages.map(Page::getLines);
+        linesMatrix.forEach(allLines::addAll);
+        return allLines.reduce((acc, line) -> acc + line.getWords().size(), 0);
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

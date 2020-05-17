@@ -11,6 +11,10 @@ public class Line {
         this.words.add(word);
     }
 
+    public DoubleLinkedList<Word> getWords() {
+        return words;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
