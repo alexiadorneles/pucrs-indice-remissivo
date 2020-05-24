@@ -24,10 +24,11 @@ public class DoubleLinkedList<T> {
 
     }
 
+    @SafeVarargs
     public static <T> DoubleLinkedList<T> asList(T... elements) {
         DoubleLinkedList<T> list = new DoubleLinkedList<>();
-        for (int i = 0; i < elements.length; i++) {
-            list.add(elements[i]);
+        for (final T element : elements) {
+            list.add(element);
         }
         return list;
     }
@@ -320,6 +321,7 @@ public class DoubleLinkedList<T> {
         return this.merge(left, right);
     }
 
+    @SuppressWarnings("unchecked")
     private Node merge(Node a, Node b) {
         Node result;
 

@@ -1,8 +1,8 @@
 package domain;
 
 public class Index {
-    private Book book;
-    private LinkedMap<Word, LinkedSet<Page>> map;
+    private final Book book;
+    private final LinkedMap<Word, LinkedSet<Page>> map;
 
     public Index(Book book) {
         this.book = book;

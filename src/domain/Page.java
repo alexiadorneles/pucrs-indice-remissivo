@@ -1,10 +1,8 @@
 package domain;
 
-import java.util.Objects;
-
 public class Page {
-    private DoubleLinkedList<Line> lines;
-    private int number;
+    private final DoubleLinkedList<Line> lines;
+    private final int number;
     private int numberOfStopwords;
     private int numberOfWords;
 

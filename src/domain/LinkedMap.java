@@ -17,8 +17,8 @@ public class LinkedMap<K extends Comparable<K>, V> {
         }
     }
 
-    private Node header;
-    private Node trailer;
+    private final Node header;
+    private final Node trailer;
     private int count;
 
     public LinkedMap() {

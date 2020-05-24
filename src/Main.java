@@ -3,8 +3,6 @@ import util.BookReader;
 import util.StopwordsReader;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Scanner;
 
 public class Main {
@@ -15,30 +13,34 @@ public class Main {
         String fileName = in.nextLine();
         DoubleLinkedList<Word> stopwords = new StopwordsReader().read();
         Book book = new BookReader(stopwords).read(fileName);
-        printOptions();
-        int chosen = in.nextInt();
-        switch (chosen) {
-            case 1:
-                System.out.println(printIndex(book.getAllWords()));
-                break;
-            case 2:
-                System.out.println(calculateStopwordsPercentage(book) + "% desse livro são stopwords");
-                break;
-            case 3:
-                Word mostFrequentWord = findMostFrequentWord(book);
-                System.out.println("A palavra que mais aparece no texto é '" + mostFrequentWord.getStripedText() + "', que aparece "
-                        + mostFrequentWord.getNumberOfAppearence() + " vezes"
-                );
-                break;
-            case 4:
-                System.out.println("Digite a plavra pra pesquisar: ");
-                String text = in.next();
-                Word found = book.getAllWords().find(word -> word.getStripedText().equals(text));
-                System.out.println(printIndex(DoubleLinkedList.asList(found)));
-                System.out.println("\nEscolha uma página: ");
-                int pageNumber = in.nextInt();
-                Page page = found.getPagesWhereItAppears().find(page1 -> page1.getNumber() == pageNumber);
-                System.out.println(page);
+        int chosen = 0;
+        while (chosen != 5) {
+            System.out.println();
+            printOptions();
+            chosen = in.nextInt();
+            switch (chosen) {
+                case 1:
+                    System.out.println(printIndex(book.getAllWords().filter(Word::isNOTStopword)));
+                    break;
+                case 2:
+                    System.out.println(calculateStopwordsPercentage(book) + "% desse livro são stopwords");
+                    break;
+                case 3:
+                    Word mostFrequentWord = findMostFrequentWord(book);
+                    System.out.println("A palavra que mais aparece no texto é '" + mostFrequentWord.getStripedText() + "', que aparece "
+                            + mostFrequentWord.getNumberOfAppearence() + " vezes"
+                    );
+                    break;
+                case 4:
+                    System.out.println("Digite a plavra pra pesquisar: ");
+                    String text = in.next();
+                    Word found = book.getAllWords().find(word -> word.getStripedText().equals(text));
+                    System.out.println(printIndex(DoubleLinkedList.asList(found)));
+                    System.out.println("\nEscolha uma página: ");
+                    int pageNumber = in.nextInt();
+                    Page selectedPage = found.getPagesWhereItAppears().find(page -> page.getNumber() == pageNumber);
+                    System.out.println(selectedPage);
+            }
         }
     }
 
@@ -66,10 +68,10 @@ public class Main {
                 "3. Encontrar a palavra mais frequente, isto é, com maior número de ocorrências;\n" +
                 "4. Pesquisar palavra (o usuário informa uma palavra; o sistema lista os números das páginas em que a\n" +
                 "palavra ocorre; na sequência, o usuário escolhe uma página e o sistema exibe a página na tela).");
+        System.out.println("5. Sair");
     }
 
     public static String calculateStopwordsPercentage(Book book) {
-        double percentage = (book.getTotalStopwords() * 100.0) / book.getTotalWordsCount();
-        return new DecimalFormat("#.##").format(percentage);
+        return new DecimalFormat("#.##").format(book.getStopwordsPercentage());
     }
 }

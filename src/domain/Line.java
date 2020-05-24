@@ -1,12 +1,10 @@
 package domain;
 
 public class Line {
-    private final Page page;
-    private DoubleLinkedList<Word> words;
+    private final DoubleLinkedList<Word> words;
     private String originalText;
 
     public Line(Page page) {
-        this.page = page;
         this.words = new DoubleLinkedList<>();
     }
 

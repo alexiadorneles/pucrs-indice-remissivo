@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 public class BookReader {
     private static final int LINE_LIMITS_TO_A_PAGE = 40;
     private final DoubleLinkedList<Word> stopWords;
-    private DoubleLinkedList<Word> allWords;
+    private final DoubleLinkedList<Word> allWords;
 
     public BookReader(DoubleLinkedList<Word> stopwords) {
         this.allWords = new DoubleLinkedList<>();
@@ -63,17 +63,14 @@ public class BookReader {
 
     private Line getLine(String lineText, Page page) {
         Line line = new Line(page);
-        String[] words = lineText.replaceAll("\\t", " ").split(" ");
+        String[] words = lineText.replaceAll("\\t", " ").replaceAll("-", " ").replaceAll("/", " ").split(" ");
         for (String wordText : words) {
             String formattedText = this.formatText(wordText);
-
             if (formattedText.isBlank()) continue;
-
             Word wordFromList = this.allWords.find(word -> word.getStripedText().equals(formattedText));
 
             if (wordFromList != null) {
                 wordFromList.incrementNumber();
-                page.incrementNumberOfWords();
                 wordFromList.appearsOn(page);
                 continue;
             }
@@ -81,6 +78,7 @@ public class BookReader {
             Word word = new Word(wordText, formattedText);
             if (this.stopWords.contains(word)) {
                 word.setStopword(true);
+                line.addWord(word);
                 page.incrementNumberOfStopwords();
                 page.incrementNumberOfWords();
                 continue;

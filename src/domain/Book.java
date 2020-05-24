@@ -1,11 +1,13 @@
 package domain;
 
 public class Book {
-    private DoubleLinkedList<Page> pages;
+    private final DoubleLinkedList<Page> pages;
+    private DoubleLinkedList<Word> words;
     private int totalPages;
 
     public Book() {
         this.pages = new DoubleLinkedList<>();
+        this.words = new DoubleLinkedList<>();
     }
 
     public void addPage(Page page) {
@@ -22,12 +24,16 @@ public class Book {
     }
 
     public int getTotalWordsCount() {
-        return getPages().map(Page::getNumberOfWords).reduce(Integer::sum, 0);
+        return this.getAllWords().reduce((acc, word) -> acc + word.getNumberOfAppearence(), 0);
+//        return getPages().map(Page::getNumberOfWords).reduce(Integer::sum, 0);
     }
 
     public DoubleLinkedList<Word> getAllWords() {
-        DoubleLinkedList<Line> allLines = getAllLines();
-        return allLines.reduce((acc, line) -> acc.addAll(line.getWords()), new DoubleLinkedList<>());
+        if (this.words.isEmpty()) {
+            this.words = getAllLines().reduce((acc, line) -> acc.addAll(line.getWords()), new DoubleLinkedList<>());
+        }
+
+        return this.words;
     }
 
     private DoubleLinkedList<Line> getAllLines() {
@@ -35,6 +41,10 @@ public class Book {
         DoubleLinkedList<DoubleLinkedList<Line>> linesMatrix = this.pages.map(Page::getLines);
         linesMatrix.forEach(allLines::addAll);
         return allLines;
+    }
+
+    public double getStopwordsPercentage() {
+        return (this.getTotalStopwords() * 100.0) / this.getTotalWordsCount();
     }
 
     @Override
