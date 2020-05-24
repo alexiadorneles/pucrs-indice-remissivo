@@ -24,6 +24,14 @@ public class DoubleLinkedList<T> {
 
     }
 
+    public static <T> DoubleLinkedList<T> asList(T... elements) {
+        DoubleLinkedList<T> list = new DoubleLinkedList<>();
+        for (int i = 0; i < elements.length; i++) {
+            list.add(elements[i]);
+        }
+        return list;
+    }
+
     public void reset() {
         current = header.next;
     }
@@ -292,18 +300,66 @@ public class DoubleLinkedList<T> {
         }
     }
 
-    public void unique() { // O(n ^ 2)
-        Node aux = header.next;
-        while (aux != trailer) {
-            Node helper = aux.next;
-            while (helper != trailer) {
-                if (helper != null && helper.element.equals(aux.element)) {
-                    this.removeByRef(helper);
-                }
-                assert helper != null;
-                helper = helper.next;
-            }
-            aux = aux.next;
+    public void sort() {
+        Node sortedList = this.mergeSort(this.header.next);
+        this.header.next = sortedList;
+        this.header.next.prev = this.header;
+        this.trailer.prev = this.getEnd(sortedList);
+        this.trailer.prev.next = trailer;
+    }
+
+    private Node mergeSort(Node h) {
+        if (h == null || h.next == null) {
+            return h;
         }
+        Node middle = getMiddle(h);
+        Node nextOfMiddle = middle.next;
+        middle.next = null;
+        Node left = mergeSort(h);
+        Node right = mergeSort(nextOfMiddle);
+        return this.merge(left, right);
+    }
+
+    private Node merge(Node a, Node b) {
+        Node result;
+
+        if (a == null || a.element == null)
+            return b;
+        if (b == null || b.element == null)
+            return a;
+
+        if (((Comparable<T>) a.element).compareTo(b.element) < 0) {
+            result = a;
+            result.next = merge(a.next, b);
+        } else {
+            result = b;
+            result.next = merge(a, b.next);
+        }
+        return result;
+    }
+
+    private Node getMiddle(Node h) {
+        if (h == null)
+            return null;
+
+        Node slow = h, fast = h;
+
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        return slow;
+    }
+
+    private Node getEnd(Node h) {
+        if (h == null)
+            return null;
+
+        while (h.next != null) {
+            h = h.next;
+        }
+
+        return h;
     }
 }
