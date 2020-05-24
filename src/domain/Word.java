@@ -3,9 +3,9 @@ package domain;
 import java.util.Objects;
 
 public class Word implements Comparable<Word> {
-    private LinkedSet<Page> pagesWhereItAppears;
+    private final LinkedSet<Page> pagesWhereItAppears;
     private final String stripedText;
-    private boolean stopword;
+    private final boolean stopword;
     private int numberOfAppearence;
 
     public Word(String stripedText, boolean stopword) {
@@ -19,12 +19,12 @@ public class Word implements Comparable<Word> {
         return stripedText;
     }
 
-    public boolean isNOTStopword() {
-        return !stopword;
+    public boolean isStopword() {
+        return this.stopword;
     }
 
-    public void setStopword(boolean stopword) {
-        this.stopword = stopword;
+    public boolean isNOTStopword() {
+        return !stopword;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class Word implements Comparable<Word> {
         return Objects.equals(this.stripedText, word.stripedText);
     }
 
-    public void incrementNumber() {
+    public void incrementNumberOfAppearence() {
         this.numberOfAppearence++;
     }
 

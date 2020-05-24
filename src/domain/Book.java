@@ -15,13 +15,12 @@ public class Book {
         this.totalPages++;
     }
 
-    public int getTotalStopwords() {
-        return this.pages.map(Page::getNumberOfStopwords).reduce(Integer::sum, 0);
+    public int getStopwordsCount() {
+        return this.getWordsCount(this.getAllWords().filter(Word::isStopword));
     }
 
-    public int getTotalWordsCount() {
-        return this.getAllWords().reduce((acc, word) -> acc + word.getNumberOfAppearence(), 0);
-//        return getPages().map(Page::getNumberOfWords).reduce(Integer::sum, 0);
+    public int getWordsCount() {
+        return this.getWordsCount(this.getAllWords());
     }
 
     public DoubleLinkedList<Word> getAllWords() {
@@ -40,7 +39,7 @@ public class Book {
     }
 
     public double getStopwordsPercentage() {
-        return (this.getTotalStopwords() * 100.0) / this.getTotalWordsCount();
+        return (this.getStopwordsCount() * 100.0) / this.getWordsCount();
     }
 
     @Override
@@ -48,5 +47,13 @@ public class Book {
         StringBuilder builder = new StringBuilder();
         this.pages.forEach(builder::append);
         return builder.toString();
+    }
+
+    private int getWordsCount(DoubleLinkedList<Word> words) {
+        return words.reduce((acc, word) -> acc + word.getNumberOfAppearence(), 0);
+    }
+
+    public int getPagesCount() {
+        return this.totalPages;
     }
 }

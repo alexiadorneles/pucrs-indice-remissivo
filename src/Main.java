@@ -10,20 +10,21 @@ public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         System.out.println("Digite o nome do arquivo para ser processado: ");
-        String fileName = in.nextLine();
-        DoubleLinkedList<Word> stopwords = new StopwordsReader().read();
-        Book book = new BookReader(stopwords).read(fileName);
+        Book book = readBook(in.nextLine());
         int chosen = 0;
+
         while (chosen != 5) {
-            System.out.println();
-            printOptions();
+            showMenuOptions();
             chosen = in.nextInt();
+            System.out.println();
             switch (chosen) {
                 case 1:
-                    System.out.println(printIndex(book.getAllWords().filter(Word::isNOTStopword)));
+                    DoubleLinkedList<Word> nonStopwords = book.getAllWords().filter(Word::isNOTStopword);
+                    System.out.println("Informando index com " + nonStopwords.size() + " plavras\n");
+                    System.out.println(printIndex(nonStopwords));
                     break;
                 case 2:
-                    System.out.println(calculateStopwordsPercentage(book) + "% desse livro são stopwords");
+                    System.out.println(printStopwordsPercentage(book) + "% desse livro são stopwords");
                     break;
                 case 3:
                     Word mostFrequentWord = findMostFrequentWord(book);
@@ -44,6 +45,11 @@ public class Main {
         }
     }
 
+    private static Book readBook(String bookName) {
+        DoubleLinkedList<String> stopwords = new StopwordsReader().read();
+        return new BookReader(stopwords).read(bookName);
+    }
+
     private static StringBuilder printIndex(DoubleLinkedList<Word> allWords) {
         allWords.sort();
         StringBuilder builder = new StringBuilder();
@@ -62,7 +68,8 @@ public class Main {
                 .reduce((acc, word) -> word.getNumberOfAppearence() > acc.getNumberOfAppearence() ? word : acc);
     }
 
-    public static void printOptions() {
+    public static void showMenuOptions() {
+        System.out.println();
         System.out.println("1. Exibir todo o índice remissivo (em ordem alfabética);\n" +
                 "2. Exibir o percentual de stopwords do texto (quanto % do texto é formado por stopwords);\n" +
                 "3. Encontrar a palavra mais frequente, isto é, com maior número de ocorrências;\n" +
@@ -71,7 +78,7 @@ public class Main {
         System.out.println("5. Sair");
     }
 
-    public static String calculateStopwordsPercentage(Book book) {
+    public static String printStopwordsPercentage(Book book) {
         return new DecimalFormat("#.##").format(book.getStopwordsPercentage());
     }
 }

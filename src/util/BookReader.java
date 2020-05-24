@@ -9,17 +9,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static java.util.Objects.isNull;
+import static util.TextFormatter.formatLine;
+import static util.TextFormatter.formatWord;
+
 public class BookReader {
     private static final int LINE_LIMITS_TO_A_PAGE = 40;
-    private final DoubleLinkedList<Word> stopWords;
+    private final DoubleLinkedList<String> stopWords;
     private final DoubleLinkedList<Word> allWords;
 
-    public BookReader(DoubleLinkedList<Word> stopwords) {
+    public BookReader(DoubleLinkedList<String> stopwords) {
         this.allWords = new DoubleLinkedList<>();
         this.stopWords = stopwords;
     }
 
     public Book read(String fileName) {
+        System.out.println("Lendo e indexando o livro " + fileName + "...");
         int lineCount = 1;
         Path path = Paths.get("resources/" + (fileName.endsWith(".txt") ? fileName : fileName + ".txt"));
         Book book = new Book();
@@ -30,13 +35,12 @@ public class BookReader {
 
             String lineText = reader.readLine();
             while (lineText != null) {
-                Line line = this.getLine(lineText, page);
-                line.setOriginalText(lineText);
+                Line line = this.createLineWithAllWords(lineText, page);
                 page.addLine(line);
 
                 if (this.isTheEndOfAPage(lineCount)) {
                     book.addPage(page);
-                    page = new Page(this.calculatePageNumber(lineCount) + 1);
+                    page = new Page(this.calculatePageNumber(lineCount));
                 }
 
                 lineCount++;
@@ -47,6 +51,9 @@ public class BookReader {
                 book.addPage(page);
             }
 
+            System.out.println("Livro lido e indexado com sucesso!");
+            System.out.println("Total de páginas: " + book.getPagesCount());
+            System.out.println("Stopwords ignoradas: " + book.getStopwordsCount());
             return book;
         } catch (IOException e) {
             throw new RuntimeException("Erro na leitura do arquivo: ", e);
@@ -54,45 +61,35 @@ public class BookReader {
     }
 
     private int calculatePageNumber(int lineCount) {
-        return lineCount / LINE_LIMITS_TO_A_PAGE;
+        return (lineCount / LINE_LIMITS_TO_A_PAGE) + 1;
     }
 
     private boolean isTheEndOfAPage(int lineCount) {
         return lineCount % LINE_LIMITS_TO_A_PAGE == 0;
     }
 
-    private Line getLine(String lineText, Page page) {
-        Line line = new Line(page);
-        String[] words = lineText.replaceAll("\\t", " ").replaceAll("-", " ").replaceAll("/", " ").split(" ");
+    private Line createLineWithAllWords(String lineText, Page page) {
+        Line line = new Line(lineText);
+        String[] words = formatLine(lineText).split(" ");
+
         for (String wordText : words) {
-            String formattedText = this.formatText(wordText);
-            if (formattedText.isBlank()) continue;
-            Word wordFromList = this.allWords.find(word -> word.getStripedText().equals(formattedText));
-
-            if (wordFromList != null) {
-                wordFromList.incrementNumber();
-                wordFromList.appearsOn(page);
-                continue;
-            }
-
-            Word word = new Word(formattedText, false);
-            if (this.stopWords.contains(word)) {
-                word.setStopword(true);
-                line.addWord(word);
-                page.incrementNumberOfStopwords();
-                page.incrementNumberOfWords();
-                continue;
-            }
-
-            word.appearsOn(page);
-            page.incrementNumberOfWords();
-            line.addWord(word);
-            this.allWords.add(word);
+            this.createAndInsertWord(page, line, formatWord(wordText));
         }
+
         return line;
     }
 
-    private String formatText(String wordText) {
-        return wordText.toLowerCase().replaceAll("[^a-zA-Z0-9 ]", "");
+    private void createAndInsertWord(Page page, Line line, String text) {
+        if (text.isBlank()) return;
+        Word wordAlreadyIndexed = this.allWords.find(word -> word.getStripedText().equals(text));
+        if (isNull(wordAlreadyIndexed)) {
+            Word word = new Word(text, this.stopWords.contains(text));
+            word.appearsOn(page);
+            line.addWord(word);
+            this.allWords.add(word);
+        } else {
+            wordAlreadyIndexed.incrementNumberOfAppearence();
+            wordAlreadyIndexed.appearsOn(page);
+        }
     }
 }

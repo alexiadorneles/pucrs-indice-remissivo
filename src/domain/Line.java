@@ -2,9 +2,10 @@ package domain;
 
 public class Line {
     private final DoubleLinkedList<Word> words;
-    private String originalText;
+    private final String originalText;
 
-    public Line(Page page) {
+    public Line(String originalText) {
+        this.originalText = originalText;
         this.words = new DoubleLinkedList<>();
     }
 
@@ -19,9 +20,5 @@ public class Line {
     @Override
     public String toString() {
         return this.originalText;
-    }
-
-    public void setOriginalText(String lineText) {
-        this.originalText = lineText;
     }
 }

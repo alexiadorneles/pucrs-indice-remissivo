@@ -13,25 +13,25 @@ public class IntegrationTest {
     @Test
     public void stopwordsCountInJavaBook() {
         StopwordsReader stopwordsReader = new StopwordsReader();
-        DoubleLinkedList<Word> stopwords = stopwordsReader.read();
+        DoubleLinkedList<String> stopwords = stopwordsReader.read();
         BookReader reader = new BookReader(stopwords);
         Book java = reader.read("java");
-        assertEquals(149, java.getTotalStopwords());
+        assertEquals(149, java.getStopwordsCount());
     }
 
     @Test
     public void allWordsCountInJavaBook() {
         StopwordsReader stopwordsReader = new StopwordsReader();
-        DoubleLinkedList<Word> stopwords = stopwordsReader.read();
+        DoubleLinkedList<String> stopwords = stopwordsReader.read();
         BookReader reader = new BookReader(stopwords);
         Book java = reader.read("java");
-        assertEquals(388, java.getTotalWordsCount());
+        assertEquals(388, java.getWordsCount());
     }
 
     @Test
     public void stopwordsPercentageInJavaBook() {
         StopwordsReader stopwordsReader = new StopwordsReader();
-        DoubleLinkedList<Word> stopwords = stopwordsReader.read();
+        DoubleLinkedList<String> stopwords = stopwordsReader.read();
         BookReader reader = new BookReader(stopwords);
         Book java = reader.read("java");
         assertEquals(38.4, java.getStopwordsPercentage(), 0.1);
@@ -40,7 +40,7 @@ public class IntegrationTest {
     @Test
     public void pagesWhereJavaWordAppearInJavaBook() {
         StopwordsReader stopwordsReader = new StopwordsReader();
-        DoubleLinkedList<Word> stopwords = stopwordsReader.read();
+        DoubleLinkedList<String> stopwords = stopwordsReader.read();
         BookReader reader = new BookReader(stopwords);
         Book java = reader.read("java");
 

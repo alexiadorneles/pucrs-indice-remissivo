@@ -8,13 +8,4 @@ public class LinkedSet<T> extends DoubleLinkedList<T> {
         super.add(element);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        this.reset();
-        for (int i = 0; i < this.size(); i++) {
-            builder.append("->").append(this.next());
-        }
-        return builder.toString();
-    }
 }

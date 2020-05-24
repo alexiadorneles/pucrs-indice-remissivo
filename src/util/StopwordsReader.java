@@ -1,7 +1,6 @@
 package util;
 
 import domain.DoubleLinkedList;
-import domain.Word;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,15 +10,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class StopwordsReader {
-    public DoubleLinkedList<Word> read() {
+    public DoubleLinkedList<String> read() {
         Path path = Paths.get("resources/stopwords.txt");
-        DoubleLinkedList<Word> stopwords = new DoubleLinkedList<>();
+        DoubleLinkedList<String> stopwords = new DoubleLinkedList<>();
         try {
             BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset());
             String lineText = reader.readLine();
             while (lineText != null) {
-                Word word = new Word(lineText.trim(), true);
-                stopwords.add(word);
+                stopwords.add(lineText.trim());
                 lineText = reader.readLine();
             }
 

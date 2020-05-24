@@ -3,8 +3,6 @@ package domain;
 public class Page {
     private final DoubleLinkedList<Line> lines;
     private final int number;
-    private int numberOfStopwords;
-    private int numberOfWords;
 
     public Page(int number) {
         this.number = number;
@@ -19,16 +17,8 @@ public class Page {
         return lines;
     }
 
-    public void incrementNumberOfStopwords() {
-        this.numberOfStopwords++;
-    }
-
-    public void incrementNumberOfWords() {
-        this.numberOfWords++;
-    }
-
-    public int getNumberOfStopwords() {
-        return numberOfStopwords;
+    public int getNumber() {
+        return number;
     }
 
     @Override
@@ -36,10 +26,6 @@ public class Page {
         StringBuilder builder = new StringBuilder();
         this.lines.forEach((line -> builder.append(line).append("\n")));
         return builder.toString();
-    }
-
-    public int getNumber() {
-        return number;
     }
 
     @Override
