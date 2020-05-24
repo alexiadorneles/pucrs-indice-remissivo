@@ -2,41 +2,28 @@ package domain;
 
 public class Index {
     private Book book;
-    private DoubleLinkedList<Word> stopwords;
+    private LinkedMap<Word, LinkedSet<Page>> map;
 
-    public Index(Book book, DoubleLinkedList<Word> stopwords) {
+    public Index(Book book) {
         this.book = book;
-        this.stopwords = stopwords;
+        this.map = new LinkedMap<>();
     }
 
     public void generate() {
-        this.parseWords();
+        book.getAllWords().forEach(word -> this.map.put(word, word.getPagesWhereItAppears()));
+        this.map.sort();
     }
 
-    private void parseWords() {
-        this.book.getPages().forEach(page -> page.getLines().forEach(line -> line.getWords().forEach(word -> {
-            if (this.isStopword(word)) {
-                this.removeWord(word, line);
-                page.incrementNumberOfStopwords();
-            }
-            this.normalizeWords(word, line);
-        })));
+    @Override
+    public String toString() {
+        DoubleLinkedList<Word> allWords = book.getAllWords();
+        StringBuilder builder = new StringBuilder();
+        allWords.forEach(word -> {
+            builder.append(word.getStripedText());
+            DoubleLinkedList<Integer> map = this.map.get(word).map(Page::getNumber);
+            map.forEach(number -> builder.append(" -> ").append(number));
+            builder.append("\n");
+        });
+        return builder.toString();
     }
-
-    private boolean isStopword(Word word) {
-        return stopwords.contains(word);
-    }
-
-    private void normalizeWords(Word word, Line line) {
-        if (word.isStopword()) return;
-        String originalText = word.getOriginalText();
-        String strippedText = originalText.replace(",", "").replace(".", "");
-        word.setStripedText(strippedText);
-    }
-
-    private void removeWord(Word word, Line line) {
-        word.setStripedText("");
-        word.setStopword(true);
-    }
-
 }

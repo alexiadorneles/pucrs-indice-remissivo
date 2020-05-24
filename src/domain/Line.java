@@ -1,9 +1,12 @@
 package domain;
 
 public class Line {
+    private final Page page;
     private DoubleLinkedList<Word> words;
+    private String originalText;
 
-    public Line() {
+    public Line(Page page) {
+        this.page = page;
         this.words = new DoubleLinkedList<>();
     }
 
@@ -17,8 +20,10 @@ public class Line {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        this.words.forEach((word -> builder.append(word).append(" ")));
-        return builder.toString();
+        return this.originalText;
+    }
+
+    public void setOriginalText(String lineText) {
+        this.originalText = lineText;
     }
 }

@@ -1,9 +1,12 @@
 package domain;
 
+import java.util.Objects;
+
 public class Page {
     private DoubleLinkedList<Line> lines;
     private int number;
     private int numberOfStopwords;
+    private int numberOfWords;
 
     public Page(int number) {
         this.number = number;
@@ -22,8 +25,16 @@ public class Page {
         this.numberOfStopwords++;
     }
 
+    public void incrementNumberOfWords() {
+        this.numberOfWords++;
+    }
+
     public int getNumberOfStopwords() {
         return numberOfStopwords;
+    }
+
+    public int getNumberOfWords() {
+        return numberOfWords;
     }
 
     @Override
@@ -31,5 +42,17 @@ public class Page {
         StringBuilder builder = new StringBuilder();
         this.lines.forEach((line -> builder.append(line).append("\n")));
         return builder.toString();
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Page page = (Page) o;
+        return number == page.number;
     }
 }

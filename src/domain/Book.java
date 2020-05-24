@@ -22,10 +22,19 @@ public class Book {
     }
 
     public int getTotalWordsCount() {
+        return getPages().map(Page::getNumberOfWords).reduce(Integer::sum, 0);
+    }
+
+    public DoubleLinkedList<Word> getAllWords() {
+        DoubleLinkedList<Line> allLines = getAllLines();
+        return allLines.reduce((acc, line) -> acc.addAll(line.getWords()), new DoubleLinkedList<>());
+    }
+
+    private DoubleLinkedList<Line> getAllLines() {
         DoubleLinkedList<Line> allLines = new DoubleLinkedList<>();
         DoubleLinkedList<DoubleLinkedList<Line>> linesMatrix = this.pages.map(Page::getLines);
         linesMatrix.forEach(allLines::addAll);
-        return allLines.reduce((acc, line) -> acc + line.getWords().size(), 0);
+        return allLines;
     }
 
     @Override
