@@ -3,6 +3,8 @@ import util.BookReader;
 import util.StopwordsReader;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Main {
@@ -13,26 +15,43 @@ public class Main {
         String fileName = in.nextLine();
         DoubleLinkedList<Word> stopwords = new StopwordsReader().read();
         Book book = new BookReader(stopwords).read(fileName);
-        Index index = new Index(book);
         printOptions();
         int chosen = in.nextInt();
         switch (chosen) {
             case 1:
-                index.generate();
-                System.out.println(index);
+                System.out.println(printIndex(book.getAllWords()));
                 break;
             case 2:
                 System.out.println(calculateStopwordsPercentage(book) + "% desse livro são stopwords");
                 break;
             case 3:
-                Word found = findMostFrequentWord(book);
-                System.out.println("A palavra que mais aparece no texto é '" + found.getStripedText() + "', que aparece "
-                        + found.getNumberOfAppearence() + " vezes"
+                Word mostFrequentWord = findMostFrequentWord(book);
+                System.out.println("A palavra que mais aparece no texto é '" + mostFrequentWord.getStripedText() + "', que aparece "
+                        + mostFrequentWord.getNumberOfAppearence() + " vezes"
                 );
                 break;
             case 4:
-                break;
+                System.out.println("Digite a plavra pra pesquisar: ");
+                String text = in.next();
+                Word found = book.getAllWords().find(word -> word.getStripedText().equals(text));
+                System.out.println(printIndex(DoubleLinkedList.asList(found)));
+                System.out.println("\nEscolha uma página: ");
+                int pageNumber = in.nextInt();
+                Page page = found.getPagesWhereItAppears().find(page1 -> page1.getNumber() == pageNumber);
+                System.out.println(page);
         }
+    }
+
+    private static StringBuilder printIndex(DoubleLinkedList<Word> allWords) {
+        allWords.sort();
+        StringBuilder builder = new StringBuilder();
+        allWords.forEach(word -> {
+            builder.append(word.getStripedText());
+            LinkedSet<Page> pages = word.getPagesWhereItAppears();
+            pages.forEach(page -> builder.append(" -> ").append(page.getNumber()));
+            builder.append("\n");
+        });
+        return builder;
     }
 
     private static Word findMostFrequentWord(Book book) {
