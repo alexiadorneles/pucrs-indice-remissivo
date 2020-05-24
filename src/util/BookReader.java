@@ -75,7 +75,7 @@ public class BookReader {
                 continue;
             }
 
-            Word word = new Word(wordText, formattedText);
+            Word word = new Word(formattedText, false);
             if (this.stopWords.contains(word)) {
                 word.setStopword(true);
                 line.addWord(word);

@@ -4,46 +4,23 @@ import java.util.Objects;
 
 public class Word implements Comparable<Word> {
     private LinkedSet<Page> pagesWhereItAppears;
-    private String originalText;
-    private String stripedText;
+    private final String stripedText;
     private boolean stopword;
     private int numberOfAppearence;
 
-    public Word(String originalText, String stripedText) {
-        this.originalText = originalText;
-        this.stripedText = stripedText;
-        this.numberOfAppearence = 1;
-        this.pagesWhereItAppears = new LinkedSet<>();
-    }
-
-    public Word(String originalText, String stripedText, boolean stopword) {
-        this.originalText = originalText;
+    public Word(String stripedText, boolean stopword) {
         this.stripedText = stripedText;
         this.stopword = stopword;
-    }
-
-    public String getOriginalText() {
-        return originalText;
+        this.pagesWhereItAppears = new LinkedSet<>();
+        this.numberOfAppearence = 1;
     }
 
     public String getStripedText() {
         return stripedText;
     }
 
-    public boolean isStopword() {
-        return stopword;
-    }
-
     public boolean isNOTStopword() {
         return !stopword;
-    }
-
-    public void setOriginalText(String originalText) {
-        this.originalText = originalText;
-    }
-
-    public void setStripedText(String stripedText) {
-        this.stripedText = stripedText;
     }
 
     public void setStopword(boolean stopword) {

@@ -18,7 +18,7 @@ public class StopwordsReader {
             BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset());
             String lineText = reader.readLine();
             while (lineText != null) {
-                Word word = new Word(lineText.trim(), lineText.trim(), true);
+                Word word = new Word(lineText.trim(), true);
                 stopwords.add(word);
                 lineText = reader.readLine();
             }

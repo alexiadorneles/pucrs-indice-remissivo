@@ -15,10 +15,6 @@ public class Book {
         this.totalPages++;
     }
 
-    public DoubleLinkedList<Page> getPages() {
-        return pages;
-    }
-
     public int getTotalStopwords() {
         return this.pages.map(Page::getNumberOfStopwords).reduce(Integer::sum, 0);
     }

@@ -31,10 +31,6 @@ public class Page {
         return numberOfStopwords;
     }
 
-    public int getNumberOfWords() {
-        return numberOfWords;
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
