@@ -7,10 +7,11 @@ import java.util.function.Function;
 public class DoubleLinkedList<T> {
     private Node header;
     private Node trailer;
-    private Node current;
+    protected Node current;
     private int count;
 
     private class Node {
+
         public T element;
         public Node next;
         public Node prev;
@@ -20,8 +21,8 @@ public class DoubleLinkedList<T> {
             next = null;
             prev = null;
         }
-    }
 
+    }
 
     public void reset() {
         current = header.next;
@@ -58,7 +59,19 @@ public class DoubleLinkedList<T> {
         return newList;
     }
 
+    public DoubleLinkedList<T> filter(Function<? super T, Boolean> function) {
+        this.reset();
+        DoubleLinkedList<T> newList = new DoubleLinkedList<>();
+        while (!this.current.equals(this.trailer)) {
+            if (function.apply(this.current.element)) newList.add(this.current.element);
+            this.next();
+        }
+
+        return newList;
+    }
+
     public <R> R reduce(BiFunction<R, ? super T, R> function, R accumulator) {
+        if (this.isEmpty()) return null;
         this.reset();
         R newAccumulator = accumulator;
         while (!this.current.equals(this.trailer)) {
@@ -69,8 +82,42 @@ public class DoubleLinkedList<T> {
         return newAccumulator;
     }
 
-    public void addAll(DoubleLinkedList<T> list) {
+    public T reduce(BiFunction<T, ? super T, T> function) {
+        if (this.isEmpty()) return null;
+        this.reset();
+        T newAccumulator = function.apply(this.current.element, this.next());
+        while (!this.current.equals(this.trailer)) {
+            newAccumulator = function.apply(newAccumulator, this.current.element);
+            this.next();
+        }
+
+        return newAccumulator;
+    }
+
+    public T find(Function<T, Boolean> function) {
+        this.reset();
+        while (!this.current.equals(this.trailer)) {
+            if (function.apply(this.current.element)) return this.current.element;
+            this.next();
+        }
+
+        return null;
+    }
+
+    public boolean some(Function<T, Boolean> function) {
+        this.reset();
+        while (!this.current.equals(this.trailer)) {
+            boolean result = function.apply(this.current.element);
+            if (result) return true;
+            this.next();
+        }
+
+        return false;
+    }
+
+    public DoubleLinkedList<T> addAll(DoubleLinkedList<T> list) {
         list.forEach(this::add);
+        return this;
     }
 
     public DoubleLinkedList() {
